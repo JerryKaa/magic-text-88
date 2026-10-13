@@ -6,7 +6,7 @@
   <title>✨ Magic Text 88 💅</title>
   
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#fdf2f8">
+  <meta name="theme-color" content="#ffffff">
   <link rel="apple-touch-icon" href="icon-512.png">
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -15,11 +15,18 @@
     html, body { overscroll-behavior-y: none; overscroll-behavior-x: none; }
     * { -webkit-tap-highlight-color: transparent; outline: none; transition: transform 0.15s ease, background-color 0.2s ease, opacity 0.2s ease; }
     body { font-family: 'Prompt', sans-serif; background: linear-gradient(135deg, #fdf4f8 0%, #f3e8ff 50%, #e0e7ff 100%); min-height: 100vh; touch-action: manipulation; }
-    .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(25px); border-radius: 2rem; border: 1.5px solid rgba(255, 255, 255, 1); box-shadow: 0 20px 45px rgba(219, 39, 119, 0.1); }
+    .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); border-radius: 2rem; border: 1.5px solid rgba(255, 255, 255, 1); box-shadow: 0 20px 45px rgba(219, 39, 119, 0.08); }
     .btn-smooth:active { transform: scale(0.97); }
-    .fade-in-up { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    .modal-overlay { background: linear-gradient(135deg, #fdf4f8 0%, #f3e8ff 50%, #e0e7ff 100%); }
+    .fade-in-up { animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* 🌸 แบ็กกราวด์หน้าล็อกอินบังคับเป็นสีขาวสะอาดตา สว่างสดใส ไม่มืดทึบ */
+    #loginScreen {
+      background: #ffffff !important;
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+    }
   </style>
 </head>
 <body class="p-4 md:p-8 text-gray-700 flex flex-col items-center justify-center relative min-h-screen">
@@ -28,13 +35,351 @@
     แจ้งเตือน
   </div>
 
-  <div id="loginScreen" class="fixed inset-0 modal-overlay z-[100] flex flex-col items-center justify-center p-4">
-    <div class="glass w-full max-w-sm p-8 flex flex-col items-center shadow-2xl fade-in-up">
-      <div class="w-16 h-16 bg-gradient-to-tr from-pink-200 to-purple-200 rounded-3xl flex items-center justify-center text-3xl mb-4 shadow-inner">🤍</div>
+  <!-- หน้าล็อกอิน (แบ็กกราวด์สีขาวสว่างคลีนๆ) -->
+  <div id="loginScreen" class="flex flex-col items-center justify-center p-4">
+    <div class="glass w-full max-w-sm p-8 flex flex-col items-center shadow-2xl fade-in-up border border-pink-100">
+      <div class="w-16 h-16 bg-gradient-to-tr from-pink-100 to-purple-100 rounded-3xl flex items-center justify-center text-3xl mb-4 shadow-inner">🤍</div>
       <h1 class="text-2xl font-bold text-center text-gray-800 mb-1">Magic Text 88</h1>
       <p class="text-center text-xs text-pink-500 mb-6 font-medium tracking-wide">✨ สำหรับลูกทีม VIP เท่านั้น 🌸</p>
       
-      <input type="text" id="loginUser" class="w-full p-3.5 mb-3.5 rounded-2xl border border-purple-100 focus:border-pink-300 text-center font-medium text-sm bg-white/70 focus:bg-white shadow-sm transition-all" placeholder="ชื่อผู้ใช้ (Username)" autocomplete="off">
+      <input type="text" id="loginUser" class="w-full p-3.5 mb-3.5 rounded-2xl border border-purple-100 focus:border-pink-300 text-center font-medium text-sm bg-gray-50/50 focus:bg-white shadow-sm transition-all" placeholder="ชื่อผู้ใช้ (Username)" autocomplete="off">
+      <input type="password" id="loginPass" class="w-full p-3.5 mb-6 rounded-2xl border border-purple-100 focus:border-pink-300 text-center font-medium text-sm bg-gray-50/50 focus:bg-white shadow-sm transition-all" placeholder="รหัสผ่าน (Password)" autocomplete="current-password">
+      
+      <button id="loginBtn" onclick="doLogin()" class="w-full bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-semibold text-base py-3.5 rounded-2xl shadow-md btn-smooth">
+        🔓 เข้าสู่ระบบ
+      </button>
+    </div>
+  </div>
+
+  <!-- หน้าหลักแอป -->
+  <div id="appContent" class="max-w-lg w-full glass p-6 md:p-8 relative z-10 hidden fade-in-up">
+    <div class="absolute top-4 right-4 flex gap-2">
+      <button onclick="openSettings()" class="text-lg bg-white/70 hover:bg-white p-2.5 rounded-full shadow-sm btn-smooth" title="ตั้งค่าข้อความ">⚙️</button>
+      <button onclick="doLogout()" class="text-xs bg-pink-50 text-pink-600 hover:bg-pink-100 p-2.5 px-4 rounded-full shadow-sm font-semibold btn-smooth" title="ออกจากระบบ">ออก</button>
+    </div>
+
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-0.5 mt-2">
+      ✨ Magic Text 88
+    </h1>
+    <p class="text-center text-[11px] font-medium text-pink-400 mb-3 tracking-widest uppercase">by Jerry.Shop88 🤍</p>
+    <p class="text-center text-xs text-purple-600 mb-6 font-medium">ยินดีต้อนรับคุณ: <span id="displayUsername" class="text-gray-800 bg-purple-50 px-2.5 py-1 rounded-lg font-semibold"></span></p>
+    
+    <div id="resultBox" class="hidden mb-6 bg-gradient-to-br from-pink-50/60 to-purple-50/60 p-4 rounded-2xl border border-pink-200/60 shadow-sm fade-in-up">
+      <label class="block text-center font-bold text-pink-600 text-sm mb-2">🌸 ข้อความพร้อมส่งลูกค้า 🌸</label>
+      <textarea id="finalText" rows="16" class="w-full p-3.5 rounded-xl border border-pink-100 text-gray-700 font-normal text-xs md:text-sm resize-y focus:outline-none bg-white/90 leading-relaxed break-all shadow-inner" spellcheck="false" readonly></textarea>
+      <button onclick="copyFinalText()" class="w-full mt-3 bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-semibold text-sm py-3 rounded-xl shadow-sm btn-smooth">
+        📋 ก๊อปปี้ส่งลูกค้าเลยแม่!
+      </button>
+    </div>
+
+    <label class="block text-xs font-bold mb-2 text-gray-600">🛍️ 1. พิมพ์ชื่อแอปหรือสินค้าที่ลูกค้าซื้อ</label>
+    <div class="mb-5">
+      <input type="text" id="appNameInput" class="w-full p-3.5 border border-purple-100 focus:border-pink-300 rounded-2xl font-medium text-sm text-gray-800 bg-white/70 shadow-sm transition-all" placeholder="เช่น Canva Pro, Netflix, YouTube..." spellcheck="false" autocomplete="off">
+    </div>
+
+    <div class="flex justify-between items-end mb-2">
+      <label class="block text-xs font-bold text-gray-600">2. วางข้อมูลตรงนี้ 👇</label>
+      <button type="button" onclick="resetAll()" class="bg-gray-50 hover:bg-gray-100 text-gray-500 border border-gray-200 px-3 py-1 rounded-full text-[11px] font-medium shadow-sm btn-smooth">🔄 ล้างข้อมูลใหม่</button>
+    </div>
+    <textarea id="rawData" rows="3" class="w-full p-3.5 border border-purple-100 focus:border-pink-300 rounded-2xl mb-5 break-all text-xs shadow-sm bg-white/70 transition-all" placeholder="วางข้อมูลบัญชีหรือรหัสผ่านลงตรงนี้ได้เลย..." spellcheck="false" autocorrect="off" autocapitalize="off" autocomplete="off"></textarea>
+    
+    <label class="block text-xs font-bold mb-2 text-gray-600">3. เลือกระยะเวลา (กดปุ๊บคำนวณปั๊บ)</label>
+    <div class="grid grid-cols-3 gap-2.5 mb-4">
+      <button type="button" onclick="generateText(1)" class="bg-white/70 hover:bg-purple-50 border border-purple-100 text-purple-700 font-semibold py-2.5 rounded-xl shadow-xs text-sm btn-smooth">1 วัน</button>
+      <button type="button" onclick="generateText(3)" class="bg-white/70 hover:bg-purple-50 border border-purple-100 text-purple-700 font-semibold py-2.5 rounded-xl shadow-xs text-sm btn-smooth">3 วัน</button>
+      <button type="button" onclick="generateText(5)" class="bg-white/70 hover:bg-purple-50 border border-purple-100 text-purple-700 font-semibold py-2.5 rounded-xl shadow-xs text-sm btn-smooth">5 วัน</button>
+      <button type="button" onclick="generateText(7)" class="bg-white/70 hover:bg-purple-50 border border-purple-100 text-purple-700 font-semibold py-2.5 rounded-xl shadow-xs text-sm btn-smooth">7 วัน</button>
+      <button type="button" onclick="generateText(14)" class="bg-white/70 hover:bg-purple-50 border border-purple-100 text-purple-700 font-semibold py-2.5 rounded-xl shadow-xs text-sm btn-smooth">14 วัน</button>
+      <button type="button" onclick="generateText(28)" class="bg-white/70 hover:bg-purple-50 border border-purple-100 text-purple-700 font-semibold py-2.5 rounded-xl shadow-xs text-sm btn-smooth">28 วัน</button>
+    </div>
+    
+    <div class="flex items-center gap-2.5">
+      <span class="text-xs font-bold text-gray-600">หรือพิมพ์วันเอง:</span>
+      <input type="tel" id="customDays" onkeypress="handleEnter(event)" class="w-20 p-2.5 border border-purple-100 focus:border-pink-300 rounded-xl text-center font-semibold text-sm shadow-xs bg-white/70" placeholder="ระบุวัน" spellcheck="false">
+      <button type="button" onclick="generateCustomText()" class="flex-1 bg-purple-400 hover:bg-purple-500 text-white font-semibold py-2.5 rounded-xl shadow-xs text-sm btn-smooth">ตกลง</button>
+    </div>
+  </div>
+
+  <!-- Modal ตั้งค่า -->
+  <div id="settingsModal" class="fixed inset-0 modal-overlay z-50 hidden flex-col items-center justify-center p-4">
+    <div class="bg-white/95 backdrop-blur-xl w-full max-w-lg rounded-3xl p-6 md:p-8 shadow-2xl max-h-[90vh] overflow-y-auto fade-in-up border border-purple-100">
+      <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">☁️ ตั้งค่าข้อความบน Cloud</h2>
+      
+      <label class="block text-xs font-bold text-gray-600 mb-1 mt-3">💬 เงื่อนไขการใช้งาน (บนสุด)</label>
+      <textarea id="tplCondition" rows="4" class="w-full p-3 border border-purple-100 rounded-xl text-xs bg-gray-50/50 focus:bg-white focus:border-pink-300 transition-all" spellcheck="false"></textarea>
+
+      <label class="block text-xs font-bold text-gray-600 mb-1 mt-3">📧 วิธีเข้าสู่ระบบ (กรณีอีเมล)</label>
+      <textarea id="tplHowToEmail" rows="5" class="w-full p-3 border border-purple-100 rounded-xl text-xs bg-gray-50/50 focus:bg-white focus:border-pink-300 transition-all" spellcheck="false"></textarea>
+
+      <label class="block text-xs font-bold text-gray-600 mb-1 mt-3">📱 วิธีเข้าสู่ระบบ (กรณีเบอร์โทร)</label>
+      <p class="text-[11px] text-pink-500 mb-1 font-medium">💡 ใส่คำว่า <span class="bg-pink-50 px-1.5 py-0.5 rounded text-pink-600 font-semibold">{PHONE_PREFIX}</span> เพื่อให้ระบบเติม prefix อัตโนมัติ</p>
+      <textarea id="tplHowToPhone" rows="5" class="w-full p-3 border border-purple-100 rounded-xl text-xs bg-gray-50/50 focus:bg-white focus:border-pink-300 transition-all" spellcheck="false"></textarea>
+
+      <label class="block text-xs font-bold text-gray-600 mb-1 mt-3">🚨 คำเตือนออกจากระบบ (ล่างสุด)</label>
+      <textarea id="tplWarning" rows="3" class="w-full p-3 border border-purple-100 rounded-xl text-xs bg-gray-50/50 focus:bg-white focus:border-pink-300 transition-all" spellcheck="false"></textarea>
+      
+      <label class="block text-xs font-bold text-gray-600 mb-1 mt-3">🙏 คำขอบคุณท้ายข้อความ</label>
+      <textarea id="tplThankYou" rows="2" class="w-full p-3 border border-purple-100 rounded-xl text-xs bg-gray-50/50 focus:bg-white focus:border-pink-300 transition-all" spellcheck="false"></textarea>
+
+      <div class="flex gap-3 mt-6">
+        <button onclick="closeSettings()" class="w-1/3 bg-gray-100 hover:bg-gray-200 text-gray-600 font-semibold py-3 rounded-2xl text-sm btn-smooth">ยกเลิก</button>
+        <button id="saveBtn" onclick="saveSettingsOnCloud()" class="w-2/3 bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-semibold py-3 rounded-2xl shadow-md text-sm btn-smooth">☁️ เซฟขึ้น Cloud</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzlXdq92GRh2FQr5IOOmX5AotKTK-on_NRzYu97ieq7cxlL95H24Q91f7sjKg3vVIMRkA/exec"; 
+
+    const defaultTemplates = {
+      condition: `🚨‼️ รบกวนอ่านให้ครบทุกบรรทัด และดูรูปวิธีเข้าใช้งานอย่างละเอียดด้วยนะคะ ‼️🚨\n\n♡ เงื่อนไขการใช้งานค่าา ♡\n⛔️ ล็อกอินได้เพียง 1 อุปกรณ์เท่านั้น ห้ามเปลี่ยนอุปกรณ์ ⛔️\n⛔️ ล็อกอินภายใน 10 นาทีเท่านั้น ⛔️\n❇️ กรณีทำตามแล้วมีปัญหา เค้ายินดีเคลมให้ค่า ❇️\n\n☆ วิธีการเข้าใช้งาน ☆`,
+      howToEmail: `1. เปิดเมนูเข้าสู่ระบบ เลือก "เข้าด้วยเมล" \n   (บางคนไม่มีให้กดเข้าด้วยเมล ล็อกอินด้วยเบอร์ กดล็อกอินด้วยรหัส แล้วจะมีไอคอนสีเหลืองขึ้นมา)\n2. กรอกเมลและรหัสที่ทางร้านให้ไป เรียบร้อยพร้อมสวยค่าา ✨\n\n⚠️ เมลไม่ใช่ google น้า\n⭕️ กรณีติดยืนยัน: กดครั้งเดียวพอ รหัสอยู่ได้ 10 นาที ค้างหน้าจอไว้ก่อน แล้วขอรหัสกับทางร้านได้เลยค่า ⭕️`,
+      howToPhone: `1. เปิดเมนูเข้าสู่ระบบ เลือกล็อกอินผ่านหมายเลขโทรศัพท์ (ไอคอนสีชมพู)\n*** 2. ปรับหน้าเบอร์เป็น {PHONE_PREFIX} (ตรงหน้าเบอร์โทรศัพท์) ***\n3. 🚨 ❗️ เน้นย้ำ!! ต้องกด "ล็อกอินด้วยรหัสผ่าน" เท่านั้นนะคะ ❗️ 🚨\n4. กรอกรหัสที่ทางร้านให้ไป เรียบร้อยพร้อมสวยค่าา ✨`,
+      warning: `🚨 💡 วิธีกดออกจากระบบบัญชีเดิม 💡 🚨\n👉 ให้ "เข้า" ไปกดออกตรง "บัญชีและความปลอดภัย" นะคะ ❗️`,
+      thankYou: `♡ ขอบคุณที่ใช้บริการนะคะ ♡\n𓂂 ˳ׄ 𓂂 สงสัยตรงไหนถามเค้าได้เลยน้าา 𓂂 ˳ׄ 𓂂`
+    };
+
+    let currentUser = localStorage.getItem('magicTextUser') || null;
+    let userTemplates = JSON.parse(localStorage.getItem('magicTextTemplates')) || defaultTemplates;
+
+    window.onload = function() {
+      if(currentUser) {
+        document.getElementById('loginScreen').style.display = 'none';
+        const appContent = document.getElementById('appContent');
+        appContent.classList.remove('hidden');
+        document.getElementById('displayUsername').innerText = currentUser;
+      } else {
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('appContent').classList.add('hidden');
+      }
+    }
+
+    async function doLogin() {
+      const user = document.getElementById('loginUser').value.trim();
+      const pass = document.getElementById('loginPass').value.trim();
+      if(!user || !pass) return showToast("⚠️ กรอกชื่อกับรหัสก่อนสิคะแม่!", false);
+
+      const btn = document.getElementById('loginBtn');
+      btn.innerText = "⏳ กำลังตรวจสอบ...";
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ action: 'login', user: user, pass: pass })
+        });
+        const result = await response.json();
+        
+        if(result.success) {
+          currentUser = user;
+          localStorage.setItem('magicTextUser', user);
+          
+          if(result.templates) {
+            userTemplates = result.templates;
+            localStorage.setItem('magicTextTemplates', JSON.stringify(userTemplates));
+          } else {
+            userTemplates = defaultTemplates; 
+          }
+
+          document.getElementById('loginScreen').style.display = 'none';
+          const appContent = document.getElementById('appContent');
+          appContent.classList.remove('hidden');
+          document.getElementById('displayUsername').innerText = user;
+          showToast("🎉 เข้าสู่ระบบสำเร็จ!", true);
+        } else {
+          showToast(result.message, false);
+        }
+      } catch (err) {
+        showToast("❌ ระบบเครือข่ายมีปัญหา ลองใหม่นะคะ", false);
+      }
+      btn.innerText = "🔓 เข้าสู่ระบบ";
+      btn.disabled = false;
+    }
+
+    function doLogout() {
+      currentUser = null;
+      localStorage.removeItem('magicTextUser');
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('appContent').classList.add('hidden');
+      document.getElementById('loginUser').value = '';
+      document.getElementById('loginPass').value = '';
+      showToast("👋 ออกจากระบบแล้ว", true);
+    }
+
+    function openSettings() {
+      document.getElementById('tplCondition').value = userTemplates.condition;
+      document.getElementById('tplHowToEmail').value = userTemplates.howToEmail;
+      document.getElementById('tplHowToPhone').value = userTemplates.howToPhone;
+      document.getElementById('tplWarning').value = userTemplates.warning;
+      document.getElementById('tplThankYou').value = userTemplates.thankYou;
+      const modal = document.getElementById('settingsModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeSettings() {
+      const modal = document.getElementById('settingsModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function saveSettingsOnCloud() {
+      const btn = document.getElementById('saveBtn');
+      btn.innerText = "⏳ กำลังเซฟ...";
+      btn.disabled = true;
+
+      const newTpls = {
+        condition: document.getElementById('tplCondition').value,
+        howToEmail: document.getElementById('tplHowToEmail').value,
+        howToPhone: document.getElementById('tplHowToPhone').value,
+        warning: document.getElementById('tplWarning').value,
+        thankYou: document.getElementById('tplThankYou').value
+      };
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({ 
+            action: 'save', 
+            user: currentUser, 
+            data: JSON.stringify(newTpls) 
+          })
+        });
+        const result = await response.json();
+        
+        if(result.success) {
+          userTemplates = newTpls;
+          localStorage.setItem('magicTextTemplates', JSON.stringify(userTemplates));
+          closeSettings();
+          showToast("☁️ บันทึกขึ้น Cloud เรียบร้อย!", true);
+        } else {
+          showToast("❌ เซฟไม่ผ่าน! ลองใหม่นะแม่", false);
+        }
+      } catch (err) {
+        showToast("❌ ระบบเครือข่ายมีปัญหา", false);
+      }
+      btn.innerText = "☁️ เซฟขึ้น Cloud";
+      btn.disabled = false;
+    }
+
+    let toastTimeout;
+    function showToast(message, isSuccess = true) {
+      const toast = document.getElementById('toast');
+      toast.innerText = message;
+      toast.className = isSuccess 
+        ? 'fixed top-6 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-xl z-[200] transition-all duration-300 font-medium text-sm whitespace-nowrap opacity-100 translate-y-0'
+        : 'fixed top-6 left-1/2 transform -translate-x-1/2 bg-pink-500 text-white px-6 py-3 rounded-full shadow-xl z-[200] transition-all duration-300 font-medium text-sm whitespace-nowrap opacity-100 translate-y-0';
+      if (navigator.vibrate) navigator.vibrate(40);
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => { 
+        toast.className = 'fixed top-6 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-xl opacity-0 pointer-events-none z-[200] transition-all duration-300 font-medium text-sm whitespace-nowrap translate-y-[-20px]'; 
+      }, 2200);
+    }
+
+    function hideKeyboard() {
+      document.getElementById('rawData').blur();
+      document.getElementById('customDays').blur();
+      document.getElementById('appNameInput').blur();
+    }
+
+    function resetAll() {
+      document.getElementById('rawData').value = '';
+      document.getElementById('customDays').value = '';
+      document.getElementById('finalText').value = '';
+      document.getElementById('appNameInput').value = '';
+      document.getElementById('resultBox').style.display = 'none';
+      hideKeyboard();
+      showToast("🔄 ล้างข้อมูลเรียบร้อย", true);
+    }
+
+    function handleEnter(event) {
+      if (event.key === 'Enter') { event.preventDefault(); generateCustomText(); }
+    }
+
+    function generateText(days) {
+      hideKeyboard(); 
+      const rawText = document.getElementById('rawData').value.trim();
+      if (!rawText) return showToast("⚠️ ว้ายยย ลืมวางข้อมูลค่ะซิส!", false);
+
+      let appName = document.getElementById('appNameInput').value.trim() || "แอปพลิเคชัน";
+      let id = "", password = "";
+      const cleanLines = rawText.split('\n').map(line => line.trim()).filter(line => line !== "");
+      
+      if (rawText.match(/(?:อี)?เมล\s*:/) || rawText.match(/รหัส(?:ผ่าน)?\s*:/) || rawText.match(/เบอร์(?:โทร)?\s*:/)) {
+        const mailMatch = rawText.match(/(?:อี)?เมล\s*:\s*([^\s]+)/);
+        const phoneMatch = rawText.match(/เบอร์(?:โทร)?\s*:\s*([^\s]+)/);
+        const passMatch = rawText.match(/รหัส(?:ผ่าน)?\s*:\s*([^\s]+)/);
+        if (mailMatch) id = mailMatch[1];
+        else if (phoneMatch) id = phoneMatch[1];
+        if (passMatch) password = passMatch[1];
+      } else if (rawText.includes("密码")) {
+        try {
+          id = rawText.split("密码")[0].trim();
+          let rest = rawText.split("密码")[1];
+          password = rest.includes("链接") ? rest.split("链接")[0].trim() : rest.trim();
+        } catch (e) { id = rawText; }
+      } else if (cleanLines.length >= 2) {
+        id = cleanLines[0]; password = cleanLines[1];   
+      } else { id = rawText.trim(); }
+
+      const isEmail = /@[^\s@]+\.[^\s@]+/.test(id) || id.includes('@') || rawText.match(/(?:อี)?เมล\s*:/);
+      let idLabel = "", phoneHowToText = "";
+
+      if (isEmail) {
+        idLabel = `📧 𝐄𝐦𝐚𝐢𝐥 : ${id}`;
+      } else {
+        const digitOnly = id.replace(/\D/g, ''); 
+        let prefixLabel = "+852 (HongKong)"; 
+        if (digitOnly.length === 11) prefixLabel = "+86 (China)";
+        else if (digitOnly.length === 8) prefixLabel = "+852 (HongKong)";
+        
+        idLabel = `📱 𝐏𝐡𝐨𝐧𝐞 (${prefixLabel}) : ${id}`;
+        phoneHowToText = userTemplates.howToPhone.replace(/{PHONE_PREFIX}/g, prefixLabel);
+      }
+
+      const d = new Date(); d.setDate(d.getDate() + parseFloat(days));
+      const dateStr = d.toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      const timeStr = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+
+      const appHeader = `🛍️ แอป : ${appName} (${days} วัน)\n`;
+      let instructionBody = isEmail ? userTemplates.howToEmail : phoneHowToText;
+      const accountInfo = `⋆ ˚｡⋆୨୧ 𝐀𝐜𝐜𝐨𝐮𝐧𝐭 𝐈𝐧𝐟𝐨 ୨୧⋆ ˚｡⋆\n⏳ 𝐄𝐱𝐩𝐢𝐫𝐞 : ${dateStr} เวลา ${timeStr} น.\n${idLabel}\n🔑 𝐏𝐚𝐬𝐬𝐰𝐨𝐫𝐝 : ${password || '-'}\n⛔️ รบกวนพิมพ์เอา ไม่ก๊อปนะคะ ⛔️`;
+      const finalText = `${appHeader}\n${userTemplates.condition}\n${instructionBody}\n\n${accountInfo}\n\n${userTemplates.warning}\n\n${userTemplates.thankYou}`;
+
+      document.getElementById('finalText').value = finalText;
+      const resultBox = document.getElementById('resultBox');
+      if(resultBox.style.display !== 'block') {
+        resultBox.style.display = 'block';
+      }
+      setTimeout(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, 100);
+      showToast("✨ สร้างข้อความสำเร็จ!", true);
+    }
+
+    function generateCustomText() {
+      const days = document.getElementById('customDays').value;
+      if (!days || isNaN(days) || parseFloat(days) <= 0) return showToast("⚠️ ระบุจำนวนวันให้ถูกต้องก่อนนะคะแม่!", false);
+      generateText(days);
+    }
+
+    function copyFinalText() {
+      const el = document.createElement('textarea');
+      el.value = document.getElementById('finalText').value;
+      el.setAttribute('readonly', ''); el.style.position = 'absolute'; el.style.left = '-9999px';
+      document.body.appendChild(el);
+      el.select(); document.execCommand('copy'); document.body.removeChild(el);
+      showToast("💖 ก๊อปปี้เรียบร้อย! พร้อมส่งแชทแตกค่ะแม่!", true);
+    }
+    
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Error:', err));
+      });
+    }
+  </script>
+</body>
+</html>      <input type="text" id="loginUser" class="w-full p-3.5 mb-3.5 rounded-2xl border border-purple-100 focus:border-pink-300 text-center font-medium text-sm bg-white/70 focus:bg-white shadow-sm transition-all" placeholder="ชื่อผู้ใช้ (Username)" autocomplete="off">
       <input type="password" id="loginPass" class="w-full p-3.5 mb-6 rounded-2xl border border-purple-100 focus:border-pink-300 text-center font-medium text-sm bg-white/70 focus:bg-white shadow-sm transition-all" placeholder="รหัสผ่าน (Password)">
       
       <button id="loginBtn" onclick="doLogin()" class="w-full bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-semibold text-base py-3.5 rounded-2xl shadow-md btn-smooth">
