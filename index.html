@@ -18,7 +18,7 @@
     .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); border-radius: 2rem; border: 1.5px solid rgba(255, 255, 255, 1); box-shadow: 0 20px 45px rgba(219, 39, 119, 0.08); }
     
     #loginScreen { display: flex; position: fixed; inset: 0; background: #ffffff; z-index: 99999; align-items: center; justify-content: center; padding: 1rem; }
-    #appContent { display: none; width: 100%; max-width: 32rem; margin: 1rem; }
+    #appContent { display: none; width: 100%; max-width: 32rem; margin: 1rem; position: relative; padding-bottom: 4rem; }
   </style>
 </head>
 <body class="p-4">
@@ -27,7 +27,7 @@
     แจ้งเตือน
   </div>
 
-  <!-- หน้าล็อกอิน (พื้นหลังสีขาวสะอาดตา สว่างสดใส) -->
+  <!-- หน้าล็อกอิน -->
   <div id="loginScreen">
     <div class="glass w-full max-w-sm p-8 flex flex-col items-center shadow-2xl border border-pink-100">
       <div class="w-16 h-16 bg-gradient-to-tr from-pink-100 to-purple-100 rounded-3xl flex items-center justify-center text-3xl mb-4 shadow-inner">🤍</div>
@@ -43,13 +43,8 @@
     </div>
   </div>
 
-  <!-- หน้าหลักแอป (ดีไซน์ฟิตมือถือ เมนูเลือกแอปแบบ Dropdown สวยฉ่ำ) -->
+  <!-- หน้าหลักแอป -->
   <div id="appContent" class="glass p-5 md:p-8 relative z-10">
-    <div class="absolute top-4 right-4 flex gap-2">
-      <button onclick="openSettings()" class="text-lg bg-white/70 hover:bg-white p-2.5 rounded-full shadow-sm" title="ตั้งค่าข้อความ">⚙️</button>
-      <button onclick="doLogout()" class="text-xs bg-pink-50 text-pink-600 hover:bg-pink-100 p-2.5 px-4 rounded-full shadow-sm font-semibold" title="ออกจากระบบ">ออก</button>
-    </div>
-
     <h1 class="text-2xl font-bold text-center text-gray-800 mb-0.5 mt-2">💖 เสกข้อความส่งลูกค้า</h1>
     <p class="text-center text-[11px] font-medium text-pink-400 mb-1 tracking-widest uppercase">💅</p>
     <p class="text-center text-xs text-pink-600 mb-4 font-semibold">เลือกแอป > วางข้อมูล > จิ้มวัน > ก๊อปส่งเลย!</p>
@@ -63,7 +58,6 @@
       </button>
     </div>
 
-    <!-- เมนูเลือกแอปแบบ Dropdown สวยหรูสไตล์เรฟ -->
     <label class="block text-xs font-bold mb-2 text-gray-600">1. เลือกแอปที่ลูกค้าซื้อ 🛍️📦</label>
     <div class="mb-5">
       <select id="selectedApp" class="w-full p-3.5 border-2 border-purple-200 focus:border-pink-300 rounded-2xl font-semibold text-sm text-purple-700 bg-white shadow-sm transition-all">
@@ -75,7 +69,6 @@
       </select>
     </div>
 
-    <!-- ช่องพิมพ์ชื่อแอปเอง (จะโชว์ก็ต่อเมื่อเลือก "อื่นๆ") -->
     <div id="customAppBox" class="mb-5 hidden">
       <input type="text" id="customAppName" class="w-full p-3 border border-purple-200 rounded-2xl text-xs font-medium bg-white shadow-sm" placeholder="พิมพ์ชื่อแอปเองตรงนี้..." autocomplete="off">
     </div>
@@ -96,10 +89,16 @@
       <button type="button" onclick="generateText(28)" class="bg-white/70 hover:bg-purple-50 border border-purple-100 text-purple-700 font-semibold py-2.5 rounded-xl text-sm">28 วัน</button>
     </div>
     
-    <div class="flex items-center gap-2.5">
+    <div class="flex items-center gap-2.5 mb-6">
       <span class="text-xs font-bold text-gray-600">หรือพิมพ์วันเอง:</span>
       <input type="tel" id="customDays" onkeypress="handleEnter(event)" class="w-20 p-2.5 border border-purple-100 focus:border-pink-300 rounded-xl text-center font-semibold text-sm shadow-xs bg-white/70" placeholder="ระบุวัน" spellcheck="false">
       <button type="button" onclick="generateCustomText()" class="flex-1 bg-purple-400 hover:bg-purple-500 text-white font-semibold py-2.5 rounded-xl text-sm">ตกลง</button>
+    </div>
+
+    <!-- ปุ่มตั้งค่าและปุ่มออก ย้ายมาอยู่มุมขวาล่าง -->
+    <div class="absolute bottom-4 right-4 flex gap-2">
+      <button onclick="openSettings()" class="text-sm bg-white/80 hover:bg-white px-3 py-1.5 rounded-full shadow-sm font-semibold border border-purple-100" title="ตั้งค่าข้อความ">⚙️ ตั้งค่า</button>
+      <button onclick="doLogout()" class="text-xs bg-pink-50 text-pink-600 hover:bg-pink-100 px-3 py-1.5 rounded-full shadow-sm font-semibold border border-pink-100" title="ออกจากระบบ">ออก</button>
     </div>
   </div>
 
@@ -155,7 +154,6 @@
         document.getElementById('appContent').style.display = 'none';
       }
 
-      // ตรวจสอบการเลือกแอป "อื่นๆ"
       document.getElementById('selectedApp').addEventListener('change', function() {
         const customBox = document.getElementById('customAppBox');
         if (this.value === 'อื่นๆ') {
