@@ -14,11 +14,11 @@
   <style>
     html, body { overscroll-behavior-y: none; overscroll-behavior-x: none; margin: 0; padding: 0; }
     * { -webkit-tap-highlight-color: transparent; outline: none; }
-    body { font-family: 'Prompt', sans-serif; background: linear-gradient(135deg, #fdf4f8 0%, #f3e8ff 50%, #e0e7ff 100%); min-height: 100vh; touch-action: manipulation; display: flex; align-items: center; justify-content: center; }
+    body { font-family: 'Prompt', sans-serif; background: linear-gradient(135deg, #fdf4f8 0%, #f3e8ff 50%, #e0e7ff 100%); min-height: 100vh; touch-action: manipulation; display: flex; align-items: center; justify-content: center; position: relative; }
     .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(25px); border-radius: 2rem; border: 1.5px solid rgba(255, 255, 255, 1); box-shadow: 0 20px 45px rgba(219, 39, 119, 0.08); }
     
     #loginScreen { display: flex; position: fixed; inset: 0; background: #ffffff; z-index: 99999; align-items: center; justify-content: center; padding: 1rem; }
-    #appContent { display: none; width: 100%; max-width: 32rem; margin: 1rem; position: relative; padding-bottom: 4rem; }
+    #appContent { display: none; width: 100%; max-width: 32rem; margin: 1rem; }
   </style>
 </head>
 <body class="p-4">
@@ -89,17 +89,17 @@
       <button type="button" onclick="generateText(28)" class="bg-white/70 hover:bg-purple-50 border border-purple-100 text-purple-700 font-semibold py-2.5 rounded-xl text-sm">28 วัน</button>
     </div>
     
-    <div class="flex items-center gap-2.5 mb-6">
+    <div class="flex items-center gap-2.5 mb-2">
       <span class="text-xs font-bold text-gray-600">หรือพิมพ์วันเอง:</span>
       <input type="tel" id="customDays" onkeypress="handleEnter(event)" class="w-20 p-2.5 border border-purple-100 focus:border-pink-300 rounded-xl text-center font-semibold text-sm shadow-xs bg-white/70" placeholder="ระบุวัน" spellcheck="false">
       <button type="button" onclick="generateCustomText()" class="flex-1 bg-purple-400 hover:bg-purple-500 text-white font-semibold py-2.5 rounded-xl text-sm">ตกลง</button>
     </div>
+  </div>
 
-    <!-- ปุ่มตั้งค่าและปุ่มออก ย้ายมาอยู่มุมขวาล่าง -->
-    <div class="absolute bottom-4 right-4 flex gap-2">
-      <button onclick="openSettings()" class="text-sm bg-white/80 hover:bg-white px-3 py-1.5 rounded-full shadow-sm font-semibold border border-purple-100" title="ตั้งค่าข้อความ">⚙️ ตั้งค่า</button>
-      <button onclick="doLogout()" class="text-xs bg-pink-50 text-pink-600 hover:bg-pink-100 px-3 py-1.5 rounded-full shadow-sm font-semibold border border-pink-100" title="ออกจากระบบ">ออก</button>
-    </div>
+  <!-- ⚙️ ปุ่มตั้งค่าและปุ่มออก ย้ายมาอยู่ "มุมขวาล่างของจอแบบลอยตัว" (ไม่ทับข้อความ 100%) -->
+  <div class="fixed bottom-4 right-4 z-50 flex gap-2">
+    <button onclick="openSettings()" class="text-xs bg-white/90 hover:bg-white text-gray-700 px-3.5 py-2 rounded-full shadow-lg font-bold border border-purple-200 backdrop-blur-md">⚙️ ตั้งค่า</button>
+    <button onclick="doLogout()" class="text-xs bg-pink-500 hover:bg-pink-600 text-white px-3.5 py-2 rounded-full shadow-lg font-bold">🚪 ออก</button>
   </div>
 
   <!-- Modal ตั้งค่า -->
